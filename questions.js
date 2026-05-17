@@ -1,253 +1,253 @@
 const QUESTIONS = [
   {
-    "question": "Which Windows utility is used to troubleshoot network latency by showing the response time of each hop to a destination?",
-    "options": ["A. ipconfig", "B. ping", "C. nslookup", "D. tracert"],
+    "question": "A network administrator splits the network block 192.168.10.0/24 into four equal subnets using Fixed Length Subnet Masking (FLSM). What is the subnet address of the third sequential subnet?",
+    "options": ["A. 192.168.10.32", "B. 192.168.10.128", "C. 192.168.10.192", "D. 192.168.10.64"],
+    "answer": "B"
+  },
+  {
+    "question": "What fundamental piece of information is entirely missing from RIPv1 routing updates, preventing it from functioning in a Variable Length Subnet Masking (VLSM) environment?",
+    "options": ["A. Autonomous System number", "B. Hop count metric", "C. Next-hop IP address", "D. Subnet mask"],
     "answer": "D"
   },
   {
-    "question": "What does the acronym EIGRP stand for?",
-    "options": ["A. Enhanced Interior Gateway Routing Protocol", "B. Extended Internal Group Routing Process", "C. Ethernet Interior Gateway Routing Path", "D. External Integrated Gateway Routing Protocol"],
+    "question": "If a switchport is manually configured with switchport mode dynamic auto and the connected device on the other end is a standard workstation NIC, what operational port type does the switchport settle into?",
+    "options": ["A. Access port", "B. Trunk port", "C. Routed port", "D. Err-disabled port"],
     "answer": "A"
   },
   {
-    "question": "A network uses NAT to allow multiple private hosts to access the internet. What is the primary functional benefit of this?",
-    "options": ["A. It encrypts all traffic for security", "B. It conserves public IPv4 addresses by mapping private addresses to a public one", "C. It increases the physical throughput of the fiber connection", "D. It dynamically assigns hostnames to IP addresses"],
+    "question": "Which two configuration parameters must be identical on two EIGRP routers for them to form a valid neighbor adjacency?",
+    "options": ["A. Process ID and Hello interval", "B. Autonomous System (AS) number and K-values", "C. Router ID and Hold timer", "D. Virtual MAC address and variance multiplier"],
     "answer": "B"
   },
   {
-    "question": "What does the acronym OSPF stand for?",
-    "options": ["A. Open System Path Finding", "B. Optimized Shortest Path First", "C. Open Shortest Path First", "D. Open Short Path First"],
-    "answer": "C"
-  },
-  {
-    "question": "Which command is used on a Windows host to verify its currently assigned IP address and default gateway?",
-    "options": ["A. ipconfig", "B. ifconfig", "C. route print", "D. show ip int brief"],
-    "answer": "A"
-  },
-  {
-    "question": "A router primarily performs its path determination and packet switching at which layer of the OSI model?",
-    "options": ["A. Layer 2 (Data Link)", "B. Layer 3 (Network)", "C. Layer 4 (Transport)", "D. Layer 1 (Physical)"],
-    "answer": "B"
-  },
-  {
-    "question": "Which protocol uses the DUAL algorithm to calculate the best loop-free path and feasible successors?",
-    "options": ["A. OSPF", "B. RIP", "C. BGP", "D. EIGRP"],
+    "question": "During the initial DHCPv4 lease process, which message is sent as a broadcast by the client device to signal that it is accepting a specific server's IP address offer?",
+    "options": ["A. DHCP Discovery", "B. DHCP Offer", "C. DHCP Acknowledgement", "D. DHCP Request"],
     "answer": "D"
   },
   {
-    "question": "What does the acronym MAC stand for in a networking context?",
-    "options": ["A. Media Access Control", "B. Media Authentication Code", "C. Media Address Center", "D. Media Access Connection"],
+    "question": "When an OSPF process is initialized on a router, how does it automatically determine its Router ID if no manual loopback or physical interfaces are explicitly designated for the ID?",
+    "options": ["A. It chooses the highest active physical IP address.", "B. It chooses the lowest active physical IP address.", "C. It generates a random 32-bit hex number.", "D. It defaults to 0.0.0.0 and stays inactive."],
     "answer": "A"
   },
   {
-    "question": "In digital communication, what is the smallest unit of data, represented as a single 1 or 0?",
-    "options": ["A. Byte", "B. Packet", "C. bit", "D. Frame"],
+    "question": "If a switch configured in VTP Client mode receives a VTP summary advertisement with a configuration revision number lower than its own current database revision number, what action does it take?",
+    "options": ["A. It updates its database to match the packet immediately.", "B. It changes its own mode from Client to Transparent.", "C. It ignores the advertisement entirely.", "D. It transmits its own database to overwrite the server."],
     "answer": "C"
   },
   {
-    "question": "Which Cisco IOS command is required to move from privileged EXEC mode to the mode where you can change system-wide settings?",
-    "options": ["A. configuration terminal", "B. interface fastethernet 0/0", "C. show running-config", "D. enable"],
+    "question": "How many usable host IP addresses are available in a subnet that utilizes a /28 mask?",
+    "options": ["A. 16", "B. 14", "C. 30", "D. 6"],
+    "answer": "B"
+  },
+  {
+    "question": "By default, what does a Cisco switch do with an incoming Ethernet frame on a trunk port if the frame does not possess an 802.1Q VLAN tag?",
+    "options": ["A. It processes the frame within the configured Native VLAN broadcast domain.", "B. It drops the frame immediately.", "C. It tags it with VLAN 100 and forwards it to all trunks.", "D. It forwards it exclusively out of port FastEthernet0/1."],
     "answer": "A"
   },
   {
-    "question": "What does the acronym UDP stand for?",
-    "options": ["A. User Datagram Protocol", "B. Unified Data Process", "C. Universal Delivery Protocol", "D. User Data Packet"],
+    "question": "What is the explicit length of the RIP Route Invalid Timer, after which a route is flagged as unreachable if no fresh updates are received?",
+    "options": ["A. 30 seconds", "B. 240 seconds", "C. 180 seconds", "D. 300 seconds"],
+    "answer": "C"
+  },
+  {
+    "question": "Which DHCP message type is sent by the server to the client to officially finalize the configuration handshake and provide lease boundaries?",
+    "options": ["A. DHCP Acknowledgement (ACK)", "B. DHCP Offer", "C. DHCP Request", "D. DHCP Discovery"],
     "answer": "A"
   },
   {
-    "question": "Which term describes a protocol like RIP that learns about network changes only via its directly connected neighbors?",
-    "options": ["A. Link State", "B. Distance Vector", "C. Path Vector", "D. Static"],
+    "question": "What is the fundamental goal of using Variable Length Subnet Masking (VLSM) instead of Fixed Length Subnet Masking (FLSM)?",
+    "options": ["A. To speed up packet forwarding inside Layer 3 switches.", "B. To allow legacy classful routing protocols to carry subnet information.", "C. To allocate subnets of varying sizes based on host requirements, reducing address waste.", "D. To eliminate the need for default gateway configurations on host machines."],
+    "answer": "C"
+  },
+  {
+    "question": "What happens to a standard unicast Ethernet frame if it enters an access port assigned to VLAN 10, but its target destination MAC address is not currently found in the switch's MAC address table?",
+    "options": ["A. The switch drops the frame.", "B. The switch floods the frame to all access ports assigned specifically to VLAN 10.", "C. The switch floods the frame to all ports on the switch regardless of their VLAN.", "D. The switch forwards the frame to the VTP server for path resolution."],
     "answer": "B"
   },
   {
-    "question": "After configuring a router interface, which command must be issued to change its status from 'Administratively Down' to 'Up'?",
-    "options": ["A. no shutdown", "B. enable interface", "C. startup", "D. interface active"],
+    "question": "What mask notation represents a default static route (Gateway of Last Resort)?",
+    "options": ["A. 0.0.0.0/0", "B. 255.255.255.255/32", "C. 10.0.0.0/8", "D. 192.168.1.1/24"],
     "answer": "A"
   },
   {
-    "question": "What does the acronym IS-IS stand for?",
-    "options": ["A. Integrated System to Integrated System", "B. Internal Standard to Internal Standard", "C. Intermediate System to Intermediate System", "D. Inter-Switch to Inter-Switch"],
-    "answer": "C"
-  },
-  {
-    "question": "Using VLSM, what is the smallest subnet mask that can support a point-to-point link while minimizing wasted host addresses?",
-    "options": ["A. /24", "B. /30", "C. /32", "D. /29"],
-    "answer": "B"
-  },
-  {
-    "question": "What does the acronym BGP stand for?",
-    "options": ["A. Basic Gateway Protocol", "B. Border Gateway Protocol", "C. Binary Gateway Process", "D. Broadband Gateway Protocol"],
-    "answer": "B"
-  },
-  {
-    "question": "How is an Autonomous System (AS) defined in the context of internet routing?",
-    "options": ["A. A collection of networks under a single administrative domain", "B. A router that functions without manual configuration", "C. A server that handles automated DHCP requests", "D. A network topology that uses a self-healing ring"],
-    "answer": "A"
-  },
-  {
-    "question": "What does the acronym DHCP stand for?",
-    "options": ["A. Dynamic Host Control Protocol", "B. Dynamic Host Configuration Protocol", "C. Domain Host Control Process", "D. Dynamic Host Communication Protocol"],
-    "answer": "B"
-  },
-  {
-    "question": "Which communication type involves a single source sending data to exactly one destination host?",
-    "options": ["A. One-to-Many", "B. One-to-All", "C. One-to-One", "D. Many-to-Many"],
-    "answer": "C"
-  },
-  {
-    "question": "What is the correct first octet range for an IPv4 Class B address?",
-    "options": ["A. 127-191", "B. 128-191", "C. 192-223", "D. 128-190"],
-    "answer": "B"
-  },
-  {
-    "question": "What does NAT stand for?",
-    "options": ["A. Network Address Translation", "B. Network Access Topology", "C. Native Address Transfer", "D. Node Access Table"],
-    "answer": "A"
-  },
-  {
-    "question": "Which protocol provides timestamping and sequencing for real-time traffic such as VoIP?",
-    "options": ["A. FTP", "B. SNMP", "C. RTP", "D. HTTP"],
-    "answer": "C"
-  },
-  {
-    "question": "What is the primary purpose of an OSPF Virtual Link?",
-    "options": ["A. To double the available bandwidth of an interface", "B. To connect a non-backbone area to Area 0 through a transit area", "C. To encrypt traffic moving between different areas", "D. To act as a software-defined replacement for physical cabling"],
-    "answer": "B"
-  },
-  {
-    "question": "What is the primary difference between UTP and STP cabling?",
-    "options": ["A. The number of wire pairs", "B. The maximum cable length", "C. The presence of internal metallic shielding", "D. The type of RJ-45 connector used"],
-    "answer": "C"
-  },
-  {
-    "question": "Which family of networking technologies is standard for most modern Local Area Networks (LANs)?",
-    "options": ["A. LANs", "B. WANs", "C. SANs", "D. VPNs"],
-    "answer": "A"
-  },
-  {
-    "question": "Which open organization is responsible for the technical development of the Internet via RFCs?",
-    "options": ["A. IEEE", "B. IETF", "C. ICANN", "D. ISO"],
-    "answer": "B"
-  },
-  {
-    "question": "Which transmission method is used when a server sends data to a specific subset of interested hosts?",
-    "options": ["A. One-to-One", "B. One-to-All", "C. One-to-Many", "D. All-to-One"],
-    "answer": "C"
-  },
-  {
-    "question": "Which address is used to verify that the local TCP/IP stack is functioning correctly?",
-    "options": ["A. Broadcast", "B. Multicast", "C. Loopback address", "D. Private IP"],
-    "answer": "C"
-  },
-  {
-    "question": "A Layer 2 switch makes its forwarding decisions primarily based on which piece of information?",
-    "options": ["A. IP Addresses", "B. MAC Addresses", "C. Port Numbers", "D. TTL values"],
-    "answer": "B"
-  },
-  {
-    "question": "In CIDR notation, which prefix is exactly equivalent to the subnet mask 255.255.255.128?",
-    "options": ["A. /24", "B. /25", "C. /26", "D. /27"],
-    "answer": "B"
-  },
-  {
-    "question": "What is a defining characteristic of Static Routing?",
-    "options": ["A. Routes are updated automatically when a link fails", "B. Routes are manually entered into the routing table by an administrator", "C. It is only used for configuring wireless access points", "D. It is a core feature of the RIP protocol"],
-    "answer": "B"
-  },
-  {
-    "question": "What is the primary function of a router's Console port?",
-    "options": ["A. Connecting to a network printer", "B. Providing high-speed fiber data transfer", "C. Out-of-band management and initial hardware configuration", "D. Connecting a standard DSL phone line"],
-    "answer": "C"
-  },
-  {
-    "question": "In an IP subnet, what is the specific role of the Network Address?",
-    "options": ["A. It is the address assigned to the last usable host", "B. It identifies the entire logical network or subnet segment", "C. It is the address used to send data to all hosts simultaneously", "D. It is the default address of the local gateway router"],
-    "answer": "B"
-  },
-  {
-    "question": "Which of the following IP blocks is reserved for Class B private network use?",
-    "options": ["A. 10.0.0.0/8", "B. 192.168.0.0/16", "C. 172.16.0.0 - 172.31.255.255", "D. 169.254.0.0/16"],
-    "answer": "C"
-  },
-  {
-    "question": "What is the fundamental purpose of 'Routing' in a computer network?",
-    "options": ["A. Connecting a wireless mouse to a desktop computer", "B. Determining the best path to move packets across different networks", "C. Generating and printing network documentation", "D. Managing the internal power supply of a rack-mounted switch"],
-    "answer": "B"
-  },
-  {
-    "question": "Which OSI layer is responsible for the logical addressing of 'Packets'?",
-    "options": ["A. Layer 2", "B. Layer 3", "C. Layer 4", "D. Layer 7"],
-    "answer": "B"
-  },
-  {
-    "question": "In OSPF terminology, what is a 'Transient Link'?",
-    "options": ["A. A physical cable that is currently disconnected", "B. A network segment with multiple routers attached (e.g., Ethernet)", "C. A serial connection between exactly two routers", "D. A virtual tunnel used for secure encrypted traffic"],
-    "answer": "B"
-  },
-  {
-    "question": "What does the acronym FLSM represent in the context of subnetting?",
-    "options": ["A. Fixed Length Subnet Mask", "B. Fast Local Subnet Mode", "C. Flexible Link State Management", "D. First Layer System Mapping"],
-    "answer": "A"
-  },
-  {
-    "question": "What is the total bit length of a standard IPv4 address?",
-    "options": ["A. 128", "B. 64", "C. 48", "D. 32"],
+    "question": "For the network block 172.16.50.64/26, what is the exact broadcast address of this subnet?",
+    "options": ["A. 172.16.50.63", "B. 172.16.50.128", "C. 172.16.50.255", "D. 172.16.50.127"],
     "answer": "D"
   },
   {
-    "question": "What is the definition of an IGP?",
-    "options": ["A. A routing protocol used within a single Autonomous System", "B. A global internet protocol for large-scale providers", "C. A process for integrating different gateway hardwares", "D. A protocol that encrypts all internal network traffic"],
-    "answer": "A"
-  },
-  {
-    "question": "How does the RIP protocol determine the 'best' path to a destination?",
-    "options": ["A. By measuring the highest bandwidth", "B. By counting the number of router hops to the destination", "C. By calculating the lowest financial cost of the link", "D. By analyzing the reliability of the physical cable"],
-    "answer": "B"
-  },
-  {
-    "question": "What is the primary action of a packet sent to a Broadcast Address?",
-    "options": ["A. It is delivered to a single specific host", "B. It is delivered to every host on the local network segment", "C. It is used solely to test the local network interface card", "D. It is used to connect two routers in different geographic cities"],
-    "answer": "B"
-  },
-  {
-    "question": "What is the primary role of an EGP?",
-    "options": ["A. Managing traffic within a small home office network", "B. Exchanging routing information between different Autonomous Systems", "C. Assigning dynamic IP addresses to internal network hosts", "D. Switching Layer 2 frames within a data center"],
-    "answer": "B"
-  },
-  {
-    "question": "What is the primary organizational benefit of using 'Subnetting'?",
-    "options": ["A. It physically increases the speed of the internet connection", "B. It divides a large network into smaller, more efficient logical segments", "C. It increases the physical length capacity of an Ethernet cable", "D. It allows Wi-Fi devices to connect without a password"],
-    "answer": "B"
-  },
-  {
-    "question": "In OSPF, what must be true for two routers on the same segment to become 'Neighbors'?",
-    "options": ["A. They must have the exact same Router ID", "B. They must agree on the Hello and Dead intervals", "C. They must share the same physical MAC address", "D. They must share common area ID and subnet info"],
+    "question": "Which command completely stops a switch interface from generating or responding to Dynamic Trunking Protocol (DTP) negotiations?",
+    "options": ["A. switchport mode trunk", "B. switchport mode access", "C. no switchport trunk allowed", "D. switchport nonegotiate"],
     "answer": "D"
   },
   {
-    "question": "What characterizes a 'Point to Point' link in a network?",
-    "options": ["A. A single router connected to a switch with many hosts", "B. A direct communication link between exactly two nodes", "C. A wireless access point serving multiple client devices", "D. A specific Layer 2 connection type"],
-    "answer": "B"
-  },
-  {
-    "question": "In computing, 'x86' refers to which category?",
-    "options": ["A. The maximum speed of a Category 6 network cable", "B. A common family of CPU architectures", "C. A specific port number used for secure web browsing", "D. A processor instruction set standard"],
-    "answer": "B"
-  },
-  {
-    "question": "What is the purpose of an SSID in a wireless network?",
-    "options": ["A. It acts as the hardware MAC address of the router", "B. It is the human-readable name of the wireless network", "C. It is the encryption key used to protect the data", "D. The unique identifier for a WLAN"],
-    "answer": "B"
-  },
-  {
-    "question": "How does a Link State protocol (like OSPF) differ from Distance Vector protocols?",
-    "options": ["A. It maintains a complete and synchronized map of the network topology", "B. It only knows the distance to the next hop", "C. It broadcasts its entire routing table every 30 seconds", "D. It uses hop count as the only metric for path selection"],
+    "question": "What specific OSPF structural database contains the complete structural map of the entire area network topology?",
+    "options": ["A. Link-State Database (LSDB)", "B. Neighbor Table", "C. Routing Table", "D. EIGRP Topology Table"],
     "answer": "A"
   },
   {
-    "question": "What is the primary security benefit of using a VPN?",
-    "options": ["A. It provides a secure, encrypted tunnel over a public network", "B. It significantly increases the physical speed of the ISP connection", "C. It allows for the assignment of more IP addresses to a home network", "D. It provides automatic DNS resolution for all websites"],
+    "question": "Which VTP operational mode allows a switch to create or delete local VLANs without sending those updates to other switches or changing its own database based on received network advertisements?",
+    "options": ["A. VTP Server", "B. VTP Client", "C. VTP Transparent", "D. VTP Disabled"],
+    "answer": "C"
+  },
+  {
+    "question": "Why must you subtract two addresses when calculating the total number of usable host configurations for a given subnet mask block?",
+    "options": ["A. One address is for the default gateway, and one is for the DNS server.", "B. One address is for the loopback interface, and one is for the management plane.", "C. One address is for the Network ID, and one is for the Subnet Broadcast address.", "D. Two addresses must be reserved to handle automated DHCP exclusions."],
+    "answer": "C"
+  },
+  {
+    "question": "What is the primary difference between a trunk link and an access link?",
+    "options": ["A. Access links support traffic from a single VLAN, while trunk links carry traffic for multiple VLANs using frame tags.", "B. Access links route packets, while trunk links switch frames.", "C. Access links use fiber cables, while trunk links are restricted to copper lines.", "D. Access links require a VTP Server status to pass data safely."],
     "answer": "A"
+  },
+  {
+    "question": "What metric does the Routing Information Protocol (RIP) use to measure path efficiency?",
+    "options": ["A. Bandwidth", "B. Hop Count", "C. Interface Delay", "D. Link Cost"],
+    "answer": "B"
+  },
+  {
+    "question": "Why do network engineers write ip dhcp excluded-address rules on a Cisco router when setting up a pool?",
+    "options": ["A. To prevent rogue DHCP servers from joining the Layer 2 local broadcast domain.", "B. To turn off DHCP processing on unneeded physical interfaces.", "C. To define the universal DNS domain suffix string.", "D. To keep specific IP addresses (like static gateways and servers) from being assigned to dynamic clients."],
+    "answer": "D"
+  },
+  {
+    "question": "If you apply Fixed Length Subnet Masking (FLSM) to create 8 distinct subnets from a single Class C /24 network block, what is the new subnet mask prefix size?",
+    "options": ["A. /26", "B. /25", "C. /27", "D. /28"],
+    "answer": "C"
+  },
+  {
+    "question": "Which of the following is a clear operational advantage of Static Routing over Dynamic Routing protocols?",
+    "options": ["A. It instantly adapts to physical topology changes without human intervention.", "B. It handles massive, scaling enterprise networks with minimal configuration steps.", "C. It uses zero network bandwidth and places no background processing overhead on the router's CPU/RAM.", "D. It automatically builds neighbor relationships using multicast Hello messages."],
+    "answer": "C"
+  },
+  {
+    "question": "If a router interface is explicitly configured with the IP address 192.168.1.45/30, what is the valid network address of this small subnet block?",
+    "options": ["A. 192.168.1.44", "B. 192.168.1.0", "C. 192.168.1.40", "D. 192.168.1.46"],
+    "answer": "A"
+  },
+  {
+    "question": "Which state confirms that two OSPF neighbors have fully synchronized their link-state databases (LSDB) over a standard network connection?",
+    "options": ["A. Init State", "B. Full State", "C. 2-Way State", "D. ExStart State"],
+    "answer": "B"
+  },
+  {
+    "question": "A small laboratory room requires exactly 25 usable host IP assignments for students. What is the most efficient subnet mask prefix length that satisfies this requirement without wasting addresses?",
+    "options": ["A. /26", "B. /27", "C. /28", "D. /29"],
+    "answer": "B"
+  },
+  {
+    "question": "What configuration command must be applied to an incoming router interface to forward local client DHCP broadcast requests to a centralized server located in a completely different subnet?",
+    "options": ["A. ip dhcp pool", "B. ip routing", "C. switchport mode access", "D. ip helper-address"],
+    "answer": "D"
+  },
+  {
+    "question": "Why does RIP set its maximum hop count boundary strictly at 15 hops?",
+    "options": ["A. To prevent packets from looping infinitely around a broken network path.", "B. To save space within low-end serial hardware interface buffers.", "C. To match the native frame sizing restrictions of Class C IP addresses.", "D. To ensure compatibility with standard 802.1Q trunk headers."],
+    "answer": "A"
+  },
+  {
+    "question": "What is the default administrative distance of a manually written static route entry?",
+    "options": ["A. 0", "B. 90", "C. 1", "D. 110"],
+    "answer": "C"
+  },
+  {
+    "question": "An engineer works with the address range 192.168.5.0/24. Subnet A uses a /26 prefix and starts at 192.168.5.0. If Subnet B is placed immediately after Subnet A with no overlapping space, what is the network address of Subnet B?",
+    "options": ["A. 192.168.5.32", "B. 192.168.5.128", "C. 192.168.5.64", "D. 192.168.5.192"],
+    "answer": "C"
+  },
+  {
+    "question": "In VTP operations, what type of packet message is distributed every 5 minutes by a VTP Server to inform surrounding switches of the current configuration revision number?",
+    "options": ["A. Summary Advertisement", "B. Subset Advertisement", "C. Client Request", "D. Join Request"],
+    "answer": "A"
+  },
+  {
+    "question": "What does a routing protocol's \"Administrative Distance\" signify?",
+    "options": ["A. The total hop count delay across a physical path.", "B. The trustworthiness and preference level of the routing source.", "C. The literal bandwidth capacity of an exit interface.", "D. The total number of subnets configured inside an area map."],
+    "answer": "B"
+  },
+  {
+    "question": "What core architectural classification does the Open Shortest Path First (OSPF) protocol belong to?",
+    "options": ["A. Distance-Vector", "B. Path-Vector", "C. Link-State", "D. Static-Hybrid"],
+    "answer": "C"
+  },
+  {
+    "question": "If a network administrator applies the command ip route 0.0.0.0 0.0.0.0 10.10.10.1, what type of path is being established on the router?",
+    "options": ["A. Host route", "B. Default static route", "C. Loopback route", "D. Floating EIGRP route"],
+    "answer": "B"
+  },
+  {
+    "question": "What is the explicit filename used by a Cisco Catalyst switch to store local VLAN definitions and VTP tracking details?",
+    "options": ["A. running-config", "B. vlan.dat", "C. startup-config", "D. ios.bin"],
+    "answer": "B"
+  },
+  {
+    "question": "If a /24 network block is broken down into exactly two equal subnets using FLSM, what is the modified subnet mask applied to each block?",
+    "options": ["A. 255.255.255.192", "B. 255.255.255.128", "C. 255.255.255.224", "D. 255.255.255.240"],
+    "answer": "B"
+  },
+  {
+    "question": "Which dynamic routing protocol distributes its entire routing table out of all active interfaces at fixed periodic intervals of 30 seconds by default?",
+    "options": ["A. EIGRP", "B. OSPF", "C. BGP", "D. RIP"],
+    "answer": "D"
+  },
+  {
+    "question": "When inspecting a router's active routing table via the CLI command show ip route, what letter code designates a path learned via OSPF?",
+    "options": ["A. S", "B. R", "C. O", "D. D"],
+    "answer": "C"
+  },
+  {
+    "question": "If a routing table contains three distinct matching path prefixes for a target packet destination address—/8, /16, and /24—which path will the router choose to forward the packet?",
+    "options": ["A. The path with the lowest administrative distance.", "B. The path that features the longest prefix match (/24).", "C. The path with the lowest numerical metric.", "D. The path that was configured first chronologically."],
+    "answer": "B"
+  },
+  {
+    "question": "What foundational calculation engine does EIGRP rely on to guarantee loop-free topology paths without waiting for fixed periodic timers?",
+    "options": ["A. Bellman-Ford Algorithm", "B. Dijkstra's Shortest Path First (SPF)", "C. Spanning Tree Protocol (STP)", "D. Diffusing Update Algorithm (DUAL)"],
+    "answer": "D"
+  },
+  {
+    "question": "What basic transaction step represents the complete order of messages exchanged during a standard successful DHCP lease acquisition sequence?",
+    "options": ["A. Request, Discover, Offer, Acknowledgement (RDOA)", "B. Discover, Offer, Request, Acknowledgement (DORA)", "C. Acknowledgement, Request, Offer, Discover (AROD)", "D. Discover, Request, Acknowledgement, Offer (DRAO)"],
+    "answer": "B"
+  },
+  {
+    "question": "Which of the following address ranges represents the designated private IP block space allocated for Class C configurations?",
+    "options": ["A. 192.168.0.0 – 192.168.255.255", "B. 172.16.0.0 – 172.31.255.255", "C. 10.0.0.0 – 10.255.255.255", "D. 169.254.0.0 – 169.254.255.255"],
+    "answer": "A"
+  },
+  {
+    "question": "What specific metric value is applied by the RIP routing protocol to flag that a network path has become down, broken, or completely unreachable?",
+    "options": ["A. 0", "B. 15", "C. 255", "D. 16"],
+    "answer": "D"
+  },
+  {
+    "question": "What operational challenge describes a major drawback of relying solely on Static Routing for an expanding enterprise network?",
+    "options": ["A. It requires high administrative upkeep and lacks automatic fault tolerance when links fail.", "B. It consumes high CPU and memory resources during structural recalculations.", "C. It generates heavy background multicast traffic across trunk links.", "D. It cannot support standard classless subnet masks or VLSM schemes."],
+    "answer": "A"
+  },
+  {
+    "question": "What does the configuration feature known as \"VTP Pruning\" accomplish across a switched campus infrastructure?",
+    "options": ["A. It deletes empty or unassigned VLAN definitions from the vlan.dat storage file.", "B. It shifts client switches into transparent operational modes automatically when performance drops.", "C. It prevents unnecessary broadcast or flooded traffic from traveling across trunk links to switches that have no active ports assigned to that specific VLAN.", "D. It zeros out mismatching configuration revision numbers across trunk endpoints."],
+    "answer": "C"
+  },
+  {
+    "question": "If a subnet block is defined with the network address 192.168.1.128/27, how many usable host IP addresses can be assigned to devices inside this block?",
+    "options": ["A. 32", "B. 16", "C. 14", "D. 30"],
+    "answer": "D"
+  },
+  {
+    "question": "Which EIGRP database structure contains all path destinations learned from directly adjacent neighbors, listing both Successor and Feasible Successor paths?",
+    "options": ["A. Neighbor Table", "B. Topology Table", "C. Routing Table", "D. Link-State Database"],
+    "answer": "B"
+  },
+  {
+    "question": "Which parameter option must be set within a Cisco router's DHCP pool configuration to tell client devices where to find their recursive Domain Name System server?",
+    "options": ["A. default-router", "B. dns-server", "C. domain-name", "D. netbios-name-server"],
+    "answer": "B"
+  },
+  {
+    "question": "If a switchport interface is configured with the command switchport trunk allowed vlan 10,20, what happens to incoming frames belonging to VLAN 30?",
+    "options": ["A. They are stripped of their tags and forwarded inside the native VLAN.", "B. They are dropped and blocked from traversing that specific trunk link.", "C. They are temporarily tagged with VLAN 10 and forwarded.", "D. They force the remote switch to rewrite its structural VTP database."],
+    "answer": "B"
   }
 ]
 ;
