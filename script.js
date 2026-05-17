@@ -20,11 +20,9 @@ window.addEventListener("DOMContentLoaded", () => {
     score = parseInt(localStorage.getItem("exam_score")) || 0;
     violations = parseInt(localStorage.getItem("exam_violations")) || 0;
     
-    // Restore the randomized question arrangement order
     const savedOrder = localStorage.getItem("exam_questions_order");
     if (savedOrder) {
       const indices = JSON.parse(savedOrder);
-      // Rebuild the QUESTIONS array structure matching the precise cached arrangement
       const originalQuestions = [...QUESTIONS];
       QUESTIONS.length = 0; 
       indices.forEach(idx => QUESTIONS.push(originalQuestions[idx]));
@@ -37,16 +35,14 @@ window.addEventListener("DOMContentLoaded", () => {
     examActive = true;
     preventBackNavigation();
     
-    // Check if an expiration timestamp exists for the current question
     let savedExpiry = localStorage.getItem("exam_timer_expiry");
     if (savedExpiry) {
       let now = Date.now();
       let timeLeft = Math.ceil((parseInt(savedExpiry) - now) / 1000);
       
       if (timeLeft > 0) {
-        timer = timeLeft; // Resume with the calculated remaining duration
+        timer = timeLeft;
       } else {
-        // Time ran out while the browser was disconnected
         current++;
         localStorage.removeItem("exam_timer_expiry");
         saveProgress();
@@ -54,11 +50,10 @@ window.addEventListener("DOMContentLoaded", () => {
       }
     }
     
-    loadQuestion(true); // Flag true means resuming, don't generate a new timestamp
+    loadQuestion(true);
   }
 });
 
-// Save current state variables into browser memory
 function saveProgress() {
   if (examActive) {
     localStorage.setItem("exam_active", "true");
@@ -71,11 +66,10 @@ function saveProgress() {
   }
 }
 
-// Clear all cache keys upon final execution completion
 function clearSavedProgress() {
   localStorage.removeItem("exam_active");
   localStorage.removeItem("exam_student");
-  localStorage.removeItem("exam_section", section);
+  localStorage.removeItem("exam_section");
   localStorage.removeItem("exam_email");
   localStorage.removeItem("exam_current");
   localStorage.removeItem("exam_score");
@@ -93,21 +87,65 @@ document.addEventListener("visibilitychange", function() {
   }
 });
 
-// 2. BLOCK SYSTEM REFRESH KEY SHORTCUTS
+// 2. SECURITY SHORTCUT INTERCEPTION (Refresh, Screen Snapping, and Copying)
 window.addEventListener("keydown", function (e) {
   if (examActive) {
+    // Block System Refresh Keys (F5, Ctrl+R, Cmd+R)
     if (e.key === "F5" || e.keyCode === 116) {
       e.preventDefault();
-      alert("Refresh is disabled! Any attempt to reload will disrupt your exam entry.");
+      alert("Refresh is disabled during the exam.");
     }
     if ((e.ctrlKey || e.metaKey) && (e.key === "r" || e.keyCode === 82)) {
       e.preventDefault();
-      alert("Refresh shortcuts are locked during the examination session.");
+      alert("Refresh shortcuts are locked during the examination.");
+    }
+
+    // --- SCREENSHOT DETECTOR BLOCK ---
+    
+    // Detect standard PrintScreen key
+    if (e.key === "PrintScreen" || e.keyCode === 44) {
+      e.preventDefault();
+      handleScreenshotViolation();
+    }
+    
+    // Detect Windows Snipping Tool (Windows + Shift + S)
+    if (e.metaKey && e.shiftKey && (e.key === "S" || e.keyCode === 83)) {
+      handleScreenshotViolation();
+    }
+
+    // Detect Mac Screenshot Shortcuts (Cmd + Shift + 3 or Cmd + Shift + 4)
+    if (e.metaKey && e.shiftKey && (e.key === "3" || e.key === "4")) {
+      handleScreenshotViolation();
+    }
+    
+    // Disable standard text copying (Ctrl + C / Cmd + C) to protect question bank
+    if ((e.ctrlKey || e.metaKey) && (e.key === "c" || e.keyCode === 67)) {
+      e.preventDefault();
+      alert("Copying text is strictly prohibited.");
     }
   }
 });
 
-// 3. CONFIRMATION PROMPT ON HARD REFRESH BUTTON CLICKS
+// Helper function to process screenshot cheating attempts
+function handleScreenshotViolation() {
+  violations++;
+  saveProgress();
+  
+  // Wipe clipboard data immediately to prevent pasting the captured image
+  navigator.clipboard.writeText(""); 
+  
+  alert("VIOLATION DETECTED!\nScreenshots and screen snips are strictly prohibited. This attempt has been logged.");
+}
+
+// Wipe clipboard if they manage to trigger a copy event via a right-click or mouse gesture
+document.addEventListener("copy", (e) => {
+  if (examActive) {
+    e.preventDefault();
+    navigator.clipboard.writeText("");
+  }
+});
+
+// 3. CONFIRMATION PROMPT ON HARD REFRESH
 window.addEventListener("beforeunload", function (e) {
   if (examActive) {
     const confirmationMessage = "Warning: Refreshing or leaving this page will disrupt your exam sequence.";
@@ -122,7 +160,7 @@ function preventBackNavigation() {
   window.history.pushState(null, null, window.location.href);
   window.addEventListener("popstate", function () {
     if (examActive) {
-      window.history.history.pushState(null, null, window.location.href);
+      window.history.pushState(null, null, window.location.href);
       alert("Navigation is locked! You cannot use the back button during the exam.");
     }
   });
@@ -144,18 +182,16 @@ function begin() {
   examActive = true;
   preventBackNavigation();
   
-  // Tag and map original indexes to preserve random layout sequences upon reload
   let orderArray = QUESTIONS.map((_, i) => i);
   orderArray.sort(() => Math.random() - 0.5);
   localStorage.setItem("exam_questions_order", JSON.stringify(orderArray));
   
-  // Apply the randomized order mapping array
   const originalQuestions = [...QUESTIONS];
   QUESTIONS.length = 0;
   orderArray.forEach(idx => QUESTIONS.push(originalQuestions[idx]));
   
   saveProgress();
-  loadQuestion(false); // False means new question, generate new timestamp expiry
+  loadQuestion(false);
 }
 
 function loadQuestion(isResuming = false) {
@@ -172,7 +208,6 @@ function loadQuestion(isResuming = false) {
       )
       .join("<br><br>");
 
-  // If this is a brand new question load, establish a fixed 40-second expiration timestamp
   if (!isResuming) {
     timer = 40;
     let expiryTime = Date.now() + (timer * 1000);
@@ -189,7 +224,7 @@ function submitAnswer(ans) {
   if (ans === correct) score++;
   current++;
   
-  localStorage.removeItem("exam_timer_expiry"); // Clear the current timestamp so the next question generates a fresh one
+  localStorage.removeItem("exam_timer_expiry");
   saveProgress();
   loadQuestion(false);
 }
