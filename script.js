@@ -6,27 +6,75 @@ let student = "";
 let section = "";
 let email = "";
 let violations = 0;
-let examActive = false; // Flag to only track violations while actively testing
+let examActive = false;
 
 const WEBAPP_URL = "https://script.google.com/macros/s/AKfycbwXV7fUu5VnsietiQNt7qYtwDfOCYnyHte46WJ4GRyMLfnL5AdVEfbNggYAUT_uFLRvNw/exec";
+
+// --- RESUME MECHANISM ON PAGE LOAD ---
+window.addEventListener("DOMContentLoaded", () => {
+  // Check if a saved session exists in local storage
+  if (localStorage.getItem("exam_active") === "true") {
+    student = localStorage.getItem("exam_student");
+    section = localStorage.getItem("exam_section");
+    email = localStorage.getItem("exam_email");
+    current = parseInt(localStorage.getItem("exam_current")) || 0;
+    score = parseInt(localStorage.getItem("exam_score")) || 0;
+    violations = parseInt(localStorage.getItem("exam_violations")) || 0;
+    
+    // Bypass login form and go straight to testing module
+    document.getElementById("startContainer").classList.add("hidden");
+    document.getElementById("examContainer").classList.remove("hidden");
+    document.getElementById("examTitle").innerText = "Student: " + student + " | Section: " + section;
+    
+    examActive = true;
+    preventBackNavigation();
+    
+    // Note: To preserve stability upon crash, we avoid re-sorting questions 
+    // during a resume event so indices map properly to answer parameters.
+    loadQuestion();
+  }
+});
+
+// Save current variables into browser memory cache
+function saveProgress() {
+  if (examActive) {
+    localStorage.setItem("exam_active", "true");
+    localStorage.setItem("exam_student", student);
+    localStorage.setItem("exam_section", section);
+    localStorage.setItem("exam_email", email);
+    localStorage.setItem("exam_current", current);
+    localStorage.setItem("exam_score", score);
+    localStorage.setItem("exam_violations", violations);
+  }
+}
+
+// Clear storage variables upon completing the test cleanly
+function clearSavedProgress() {
+  localStorage.removeItem("exam_active");
+  localStorage.removeItem("exam_student");
+  localStorage.removeItem("exam_section");
+  localStorage.removeItem("exam_email");
+  localStorage.removeItem("exam_current");
+  localStorage.removeItem("exam_score");
+  localStorage.removeItem("exam_violations");
+}
 
 // 1. TRACK TAB SWITCHES / MINIMIZATION
 document.addEventListener("visibilitychange", function() {
   if (document.hidden && examActive) {
     violations++;
+    saveProgress(); // Log the violation into storage immediately
     alert("VIOLATION DETECTED!\nDo not leave or switch tabs during the exam. This incident has been logged.");
   }
 });
 
-// 2. BLOCK SYSTEM REFRESH KEY SHORTCUTS
+// 2. BLOCK SYSTEM REFRESH KEY SHORTCUTS (F5, Ctrl+R, Cmd+R)
 window.addEventListener("keydown", function (e) {
   if (examActive) {
-    // Intercept F5
     if (e.key === "F5" || e.keyCode === 116) {
       e.preventDefault();
       alert("Refresh is disabled! Any attempt to reload will disrupt your exam entry.");
     }
-    // Intercept Ctrl+R (Windows) or Cmd+R (Mac)
     if ((e.ctrlKey || e.metaKey) && (e.key === "r" || e.keyCode === 82)) {
       e.preventDefault();
       alert("Refresh shortcuts are locked during the examination session.");
@@ -34,22 +82,19 @@ window.addEventListener("keydown", function (e) {
   }
 });
 
-// 3. SHOW DIALOG WARNING IF THEY INTERACT WITH THE BROWSER REFRESH/CLOSE BUTTONS
+// 3. SHOW CONFIRMATION WARNING ON HARD SYSTEM RELOAD
 window.addEventListener("beforeunload", function (e) {
   if (examActive) {
-    // Modern browsers display a standard security prompt instead of custom strings, 
-    // but setting e.returnValue triggers the warning box to halt the exit.
-    const confirmationMessage = "Warning: Refreshing or leaving this page will reset your progress entirely.";
+    const confirmationMessage = "Warning: Refreshing or leaving this page will disrupt your timer sequence.";
     e.preventDefault();
     e.returnValue = confirmationMessage;
     return confirmationMessage;
   }
 });
 
-// 4. HISTORY TRAP FUNCTION (Disables the Back Action)
+// 4. HISTORY TRAP FUNCTION (Disables Back Button navigation)
 function preventBackNavigation() {
   window.history.pushState(null, null, window.location.href);
-  
   window.addEventListener("popstate", function () {
     if (examActive) {
       window.history.pushState(null, null, window.location.href);
@@ -70,15 +115,15 @@ function begin() {
   document.getElementById("startContainer").classList.add("hidden");
   document.getElementById("examContainer").classList.remove("hidden");
 
-  document.getElementById("examTitle").innerText =
-    "Student: " + student + " | Section: " + section;
+  document.getElementById("examTitle").innerText = "Student: " + student + " | Section: " + section;
 
   examActive = true;
-  
-  // Activate navigation blocks immediately on test start
   preventBackNavigation();
   
+  // Randomize questions list on an original test launch initialization
   QUESTIONS.sort(() => Math.random() - 0.5);
+  
+  saveProgress();
   loadQuestion();
 }
 
@@ -93,7 +138,7 @@ function loadQuestion() {
     `<h3>${current + 1}. ${q.question}</h3>` +
     q.options
       .map((opt, i) =>
-        `<button onclick="submitAnswer('${String.fromCharCode(65 + i)}')">${opt}</button>`
+        `<button onclick=\"submitAnswer('${String.fromCharCode(65 + i)}')\">${opt}</button>`
       )
       .join("<br><br>");
 
@@ -106,6 +151,8 @@ function submitAnswer(ans) {
   const correct = QUESTIONS[current].answer;
   if (ans === correct) score++;
   current++;
+  
+  saveProgress(); // Store metrics data before loading the next view instance
   loadQuestion();
 }
 
@@ -113,6 +160,7 @@ function updateTimer() {
   document.getElementById("timer").innerText = timer;
   if (timer <= 0) {
     current++;
+    saveProgress(); // Commit tracking increments to local registry cache
     loadQuestion();
   }
   timer--;
@@ -120,7 +168,8 @@ function updateTimer() {
 
 function finishExam() {
   clearInterval(interval);
-  examActive = false; // Turn off monitoring and release the history/refresh lock parameters
+  examActive = false; 
+  clearSavedProgress(); // Delete session cache data to allow future test attempts
 
   document.getElementById("examContainer").classList.add("hidden");
   document.getElementById("resultContainer").classList.remove("hidden");
