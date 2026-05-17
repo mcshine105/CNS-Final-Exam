@@ -1,18 +1,30 @@
-
 let current = 0;
 let score = 0;
 let timer = 40;
 let interval;
 let student = "";
 let section = "";
+let email = "";
+let violations = 0;
+let examActive = false; // Flag to only track violations while actively testing
 
 const WEBAPP_URL = "https://script.google.com/macros/s/AKfycbwXV7fUu5VnsietiQNt7qYtwDfOCYnyHte46WJ4GRyMLfnL5AdVEfbNggYAUT_uFLRvNw/exec";
 
+// Track when user switches tabs or minimizes window
+document.addEventListener("visibilitychange", function() {
+  if (document.hidden && examActive) {
+    violations++;
+    alert("VIOLATION DETECTED!\nDo not leave or switch tabs during the exam. This incident has been logged.");
+  }
+});
+
 function begin() {
   student = document.getElementById("studentName").value.trim();
+  email = document.getElementById("studentEmail").value.trim();
   section = document.getElementById("studentSection").value.trim();
 
   if (!student) { alert("Please enter student name."); return; }
+  if (!email) { alert("Please enter your email address."); return; }
   if (!section) { alert("Please enter section."); return; }
 
   document.getElementById("startContainer").classList.add("hidden");
@@ -21,6 +33,7 @@ function begin() {
   document.getElementById("examTitle").innerText =
     "Student: " + student + " | Section: " + section;
 
+  examActive = true;
   QUESTIONS.sort(() => Math.random() - 0.5);
   loadQuestion();
 }
@@ -63,6 +76,7 @@ function updateTimer() {
 
 function finishExam() {
   clearInterval(interval);
+  examActive = false; // Turn off monitoring
 
   document.getElementById("examContainer").classList.add("hidden");
   document.getElementById("resultContainer").classList.remove("hidden");
@@ -70,7 +84,12 @@ function finishExam() {
   let datetime = new Date().toLocaleString();
   document.getElementById("studentResult").innerText =
     `${student} (${section}), your score is ${score} out of ${QUESTIONS.length}.`;
+  
+  // Display violations to the student on-screen
+  document.getElementById("violationsResult").innerText = 
+    `Total integrity violations recorded: ${violations}`;
 
+  // Package extended info including email & violations count
   fetch(WEBAPP_URL, {
     method: "POST",
     mode: "no-cors",
@@ -78,9 +97,9 @@ function finishExam() {
       "Content-Type": "application/x-www-form-urlencoded",
     },
     body:
-      `name=${encodeURIComponent(student)}&section=${encodeURIComponent(
+      `name=${encodeURIComponent(student)}&email=${encodeURIComponent(email)}&section=${encodeURIComponent(
         section
-      )}&score=${score}&total=${QUESTIONS.length}&datetime=${encodeURIComponent(
+      )}&score=${score}&total=${QUESTIONS.length}&violations=${violations}&datetime=${encodeURIComponent(
         datetime
       )}`,
   });

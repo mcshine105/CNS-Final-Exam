@@ -15,6 +15,9 @@
   <label>Enter Student Name: (Last name, First name MI)</label><br>
   <input id="studentName" type="text" placeholder="Full Name"><br><br>
 
+  <label>Enter Email Address: (For receiving results)</label><br>
+  <input id="studentEmail" type="email" placeholder="email@domain.com"><br><br>
+
   <label>Enter Section: (BSCpE3A or BSCpE3B)</label><br>
   <input id="studentSection" type="text" placeholder="Section"><br><br>
 
@@ -30,7 +33,8 @@
 <div id="resultContainer" class="hidden">
   <h1>Exam Completed</h1>
   <p id="studentResult"></p>
-  <p>Your result has been submitted automatically.</p>
+  <p id="violationsResult" style="color: #cc0000; font-weight: bold;"></p>
+  <p>Your result has been submitted automatically and a confirmation email has been requested.</p>
 </div>
 
 </body>
