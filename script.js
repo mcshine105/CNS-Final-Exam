@@ -12,7 +12,6 @@ const WEBAPP_URL = "https://script.google.com/macros/s/AKfycbwXV7fUu5VnsietiQNt7
 
 // --- RESUME MECHANISM ON PAGE LOAD ---
 window.addEventListener("DOMContentLoaded", () => {
-  // Check if a saved session exists in local storage
   if (localStorage.getItem("exam_active") === "true") {
     student = localStorage.getItem("exam_student");
     section = localStorage.getItem("exam_section");
@@ -21,7 +20,16 @@ window.addEventListener("DOMContentLoaded", () => {
     score = parseInt(localStorage.getItem("exam_score")) || 0;
     violations = parseInt(localStorage.getItem("exam_violations")) || 0;
     
-    // Bypass login form and go straight to testing module
+    // Restore the randomized question arrangement order
+    const savedOrder = localStorage.getItem("exam_questions_order");
+    if (savedOrder) {
+      const indices = JSON.parse(savedOrder);
+      // Rebuild the QUESTIONS array structure matching the precise cached arrangement
+      const originalQuestions = [...QUESTIONS];
+      QUESTIONS.length = 0; 
+      indices.forEach(idx => QUESTIONS.push(originalQuestions[idx]));
+    }
+
     document.getElementById("startContainer").classList.add("hidden");
     document.getElementById("examContainer").classList.remove("hidden");
     document.getElementById("examTitle").innerText = "Student: " + student + " | Section: " + section;
@@ -29,13 +37,28 @@ window.addEventListener("DOMContentLoaded", () => {
     examActive = true;
     preventBackNavigation();
     
-    // Note: To preserve stability upon crash, we avoid re-sorting questions 
-    // during a resume event so indices map properly to answer parameters.
-    loadQuestion();
+    // Check if an expiration timestamp exists for the current question
+    let savedExpiry = localStorage.getItem("exam_timer_expiry");
+    if (savedExpiry) {
+      let now = Date.now();
+      let timeLeft = Math.ceil((parseInt(savedExpiry) - now) / 1000);
+      
+      if (timeLeft > 0) {
+        timer = timeLeft; // Resume with the calculated remaining duration
+      } else {
+        // Time ran out while the browser was disconnected
+        current++;
+        localStorage.removeItem("exam_timer_expiry");
+        saveProgress();
+        return loadQuestion();
+      }
+    }
+    
+    loadQuestion(true); // Flag true means resuming, don't generate a new timestamp
   }
 });
 
-// Save current variables into browser memory cache
+// Save current state variables into browser memory
 function saveProgress() {
   if (examActive) {
     localStorage.setItem("exam_active", "true");
@@ -48,27 +71,29 @@ function saveProgress() {
   }
 }
 
-// Clear storage variables upon completing the test cleanly
+// Clear all cache keys upon final execution completion
 function clearSavedProgress() {
   localStorage.removeItem("exam_active");
   localStorage.removeItem("exam_student");
-  localStorage.removeItem("exam_section");
+  localStorage.removeItem("exam_section", section);
   localStorage.removeItem("exam_email");
   localStorage.removeItem("exam_current");
   localStorage.removeItem("exam_score");
   localStorage.removeItem("exam_violations");
+  localStorage.removeItem("exam_timer_expiry");
+  localStorage.removeItem("exam_questions_order");
 }
 
 // 1. TRACK TAB SWITCHES / MINIMIZATION
 document.addEventListener("visibilitychange", function() {
   if (document.hidden && examActive) {
     violations++;
-    saveProgress(); // Log the violation into storage immediately
+    saveProgress();
     alert("VIOLATION DETECTED!\nDo not leave or switch tabs during the exam. This incident has been logged.");
   }
 });
 
-// 2. BLOCK SYSTEM REFRESH KEY SHORTCUTS (F5, Ctrl+R, Cmd+R)
+// 2. BLOCK SYSTEM REFRESH KEY SHORTCUTS
 window.addEventListener("keydown", function (e) {
   if (examActive) {
     if (e.key === "F5" || e.keyCode === 116) {
@@ -82,22 +107,22 @@ window.addEventListener("keydown", function (e) {
   }
 });
 
-// 3. SHOW CONFIRMATION WARNING ON HARD SYSTEM RELOAD
+// 3. CONFIRMATION PROMPT ON HARD REFRESH BUTTON CLICKS
 window.addEventListener("beforeunload", function (e) {
   if (examActive) {
-    const confirmationMessage = "Warning: Refreshing or leaving this page will disrupt your timer sequence.";
+    const confirmationMessage = "Warning: Refreshing or leaving this page will disrupt your exam sequence.";
     e.preventDefault();
     e.returnValue = confirmationMessage;
     return confirmationMessage;
   }
 });
 
-// 4. HISTORY TRAP FUNCTION (Disables Back Button navigation)
+// 4. HISTORY TRAP FUNCTION (Disables Back Button)
 function preventBackNavigation() {
   window.history.pushState(null, null, window.location.href);
   window.addEventListener("popstate", function () {
     if (examActive) {
-      window.history.pushState(null, null, window.location.href);
+      window.history.history.pushState(null, null, window.location.href);
       alert("Navigation is locked! You cannot use the back button during the exam.");
     }
   });
@@ -114,23 +139,28 @@ function begin() {
 
   document.getElementById("startContainer").classList.add("hidden");
   document.getElementById("examContainer").classList.remove("hidden");
-
   document.getElementById("examTitle").innerText = "Student: " + student + " | Section: " + section;
 
   examActive = true;
   preventBackNavigation();
   
-  // Randomize questions list on an original test launch initialization
-  QUESTIONS.sort(() => Math.random() - 0.5);
+  // Tag and map original indexes to preserve random layout sequences upon reload
+  let orderArray = QUESTIONS.map((_, i) => i);
+  orderArray.sort(() => Math.random() - 0.5);
+  localStorage.setItem("exam_questions_order", JSON.stringify(orderArray));
+  
+  // Apply the randomized order mapping array
+  const originalQuestions = [...QUESTIONS];
+  QUESTIONS.length = 0;
+  orderArray.forEach(idx => QUESTIONS.push(originalQuestions[idx]));
   
   saveProgress();
-  loadQuestion();
+  loadQuestion(false); // False means new question, generate new timestamp expiry
 }
 
-function loadQuestion() {
+function loadQuestion(isResuming = false) {
   if (current >= QUESTIONS.length) return finishExam();
 
-  timer = 40;
   const q = QUESTIONS[current];
   const box = document.getElementById("questionBox");
 
@@ -138,13 +168,20 @@ function loadQuestion() {
     `<h3>${current + 1}. ${q.question}</h3>` +
     q.options
       .map((opt, i) =>
-        `<button onclick=\"submitAnswer('${String.fromCharCode(65 + i)}')\">${opt}</button>`
+        `<button onclick="submitAnswer('${String.fromCharCode(65 + i)}')">${opt}</button>`
       )
       .join("<br><br>");
 
-  updateTimer();
+  // If this is a brand new question load, establish a fixed 40-second expiration timestamp
+  if (!isResuming) {
+    timer = 40;
+    let expiryTime = Date.now() + (timer * 1000);
+    localStorage.setItem("exam_timer_expiry", expiryTime.toString());
+  }
+
+  updateTimerDisplay();
   clearInterval(interval);
-  interval = setInterval(updateTimer, 1000);
+  interval = setInterval(updateTimerSequence, 1000);
 }
 
 function submitAnswer(ans) {
@@ -152,24 +189,38 @@ function submitAnswer(ans) {
   if (ans === correct) score++;
   current++;
   
-  saveProgress(); // Store metrics data before loading the next view instance
-  loadQuestion();
+  localStorage.removeItem("exam_timer_expiry"); // Clear the current timestamp so the next question generates a fresh one
+  saveProgress();
+  loadQuestion(false);
 }
 
-function updateTimer() {
-  document.getElementById("timer").innerText = timer;
-  if (timer <= 0) {
+function updateTimerSequence() {
+  let expiry = parseInt(localStorage.getItem("exam_timer_expiry"));
+  if (!expiry) return;
+
+  let now = Date.now();
+  let timeLeft = Math.ceil((expiry - now) / 1000);
+
+  if (timeLeft <= 0) {
+    clearInterval(interval);
     current++;
-    saveProgress(); // Commit tracking increments to local registry cache
-    loadQuestion();
+    localStorage.removeItem("exam_timer_expiry");
+    saveProgress();
+    loadQuestion(false);
+  } else {
+    timer = timeLeft;
+    updateTimerDisplay();
   }
-  timer--;
+}
+
+function updateTimerDisplay() {
+  document.getElementById("timer").innerText = timer;
 }
 
 function finishExam() {
   clearInterval(interval);
   examActive = false; 
-  clearSavedProgress(); // Delete session cache data to allow future test attempts
+  clearSavedProgress();
 
   document.getElementById("examContainer").classList.add("hidden");
   document.getElementById("resultContainer").classList.remove("hidden");
