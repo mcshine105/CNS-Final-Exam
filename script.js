@@ -10,13 +10,38 @@ let examActive = false; // Flag to only track violations while actively testing
 
 const WEBAPP_URL = "https://script.google.com/macros/s/AKfycbwXV7fUu5VnsietiQNt7qYtwDfOCYnyHte46WJ4GRyMLfnL5AdVEfbNggYAUT_uFLRvNw/exec";
 
-// Track when user switches tabs or minimizes window
+// 1. TRACK TAB SWITCHES / MINIMIZATION
 document.addEventListener("visibilitychange", function() {
   if (document.hidden && examActive) {
     violations++;
     alert("VIOLATION DETECTED!\nDo not leave or switch tabs during the exam. This incident has been logged.");
   }
 });
+
+// 2. BLOCK ACCIDENTAL REFRESH / PAGE CLOSURES
+window.addEventListener("beforeunload", function (e) {
+  if (examActive) {
+    // Standard text fallback for modern browsers (they show a generic system message)
+    const msg = "Are you sure you want to leave? Your exam progress will be lost.";
+    e.preventDefault();
+    e.returnValue = msg;
+    return msg;
+  }
+});
+
+// 3. HISTORY TRAP FUNCTION (Disables the Back Action)
+function preventBackNavigation() {
+  // Push a fake state into the browser history stack
+  window.history.pushState(null, null, window.location.href);
+  
+  // Every time the user clicks "Back", push them right back to the current view
+  window.addEventListener("popstate", function () {
+    if (examActive) {
+      window.history.pushState(null, null, window.location.href);
+      alert("Navigation is locked! You cannot use the back button during the exam.");
+    }
+  });
+}
 
 function begin() {
   student = document.getElementById("studentName").value.trim();
@@ -34,6 +59,10 @@ function begin() {
     "Student: " + student + " | Section: " + section;
 
   examActive = true;
+  
+  // Activate the back button barrier immediately on test start
+  preventBackNavigation();
+  
   QUESTIONS.sort(() => Math.random() - 0.5);
   loadQuestion();
 }
@@ -76,7 +105,7 @@ function updateTimer() {
 
 function finishExam() {
   clearInterval(interval);
-  examActive = false; // Turn off monitoring
+  examActive = false; // Turn off monitoring and release the history lock
 
   document.getElementById("examContainer").classList.add("hidden");
   document.getElementById("resultContainer").classList.remove("hidden");
@@ -85,11 +114,9 @@ function finishExam() {
   document.getElementById("studentResult").innerText =
     `${student} (${section}), your score is ${score} out of ${QUESTIONS.length}.`;
   
-  // Display violations to the student on-screen
   document.getElementById("violationsResult").innerText = 
     `Total integrity violations recorded: ${violations}`;
 
-  // Package extended info including email & violations count
   fetch(WEBAPP_URL, {
     method: "POST",
     mode: "no-cors",
