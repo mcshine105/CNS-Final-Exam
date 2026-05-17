@@ -18,23 +18,38 @@ document.addEventListener("visibilitychange", function() {
   }
 });
 
-// 2. BLOCK ACCIDENTAL REFRESH / PAGE CLOSURES
-window.addEventListener("beforeunload", function (e) {
+// 2. BLOCK SYSTEM REFRESH KEY SHORTCUTS
+window.addEventListener("keydown", function (e) {
   if (examActive) {
-    // Standard text fallback for modern browsers (they show a generic system message)
-    const msg = "Are you sure you want to leave? Your exam progress will be lost.";
-    e.preventDefault();
-    e.returnValue = msg;
-    return msg;
+    // Intercept F5
+    if (e.key === "F5" || e.keyCode === 116) {
+      e.preventDefault();
+      alert("Refresh is disabled! Any attempt to reload will disrupt your exam entry.");
+    }
+    // Intercept Ctrl+R (Windows) or Cmd+R (Mac)
+    if ((e.ctrlKey || e.metaKey) && (e.key === "r" || e.keyCode === 82)) {
+      e.preventDefault();
+      alert("Refresh shortcuts are locked during the examination session.");
+    }
   }
 });
 
-// 3. HISTORY TRAP FUNCTION (Disables the Back Action)
+// 3. SHOW DIALOG WARNING IF THEY INTERACT WITH THE BROWSER REFRESH/CLOSE BUTTONS
+window.addEventListener("beforeunload", function (e) {
+  if (examActive) {
+    // Modern browsers display a standard security prompt instead of custom strings, 
+    // but setting e.returnValue triggers the warning box to halt the exit.
+    const confirmationMessage = "Warning: Refreshing or leaving this page will reset your progress entirely.";
+    e.preventDefault();
+    e.returnValue = confirmationMessage;
+    return confirmationMessage;
+  }
+});
+
+// 4. HISTORY TRAP FUNCTION (Disables the Back Action)
 function preventBackNavigation() {
-  // Push a fake state into the browser history stack
   window.history.pushState(null, null, window.location.href);
   
-  // Every time the user clicks "Back", push them right back to the current view
   window.addEventListener("popstate", function () {
     if (examActive) {
       window.history.pushState(null, null, window.location.href);
@@ -60,7 +75,7 @@ function begin() {
 
   examActive = true;
   
-  // Activate the back button barrier immediately on test start
+  // Activate navigation blocks immediately on test start
   preventBackNavigation();
   
   QUESTIONS.sort(() => Math.random() - 0.5);
@@ -105,7 +120,7 @@ function updateTimer() {
 
 function finishExam() {
   clearInterval(interval);
-  examActive = false; // Turn off monitoring and release the history lock
+  examActive = false; // Turn off monitoring and release the history/refresh lock parameters
 
   document.getElementById("examContainer").classList.add("hidden");
   document.getElementById("resultContainer").classList.remove("hidden");
