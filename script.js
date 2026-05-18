@@ -4,10 +4,10 @@ let timer = 40;
 let interval;
 let student = "";
 let section = "";
-let email = "";
 let violations = 0;
 let examActive = false;
 
+// Paste your actual Google Apps Script Web App URL between the quotation marks below
 const WEBAPP_URL = "https://script.google.com/macros/s/AKfycbwXV7fUu5VnsietiQNt7qYtwDfOCYnyHte46WJ4GRyMLfnL5AdVEfbNggYAUT_uFLRvNw/exec";
 
 // --- RESUME MECHANISM ON PAGE LOAD ---
@@ -15,7 +15,6 @@ window.addEventListener("DOMContentLoaded", () => {
   if (localStorage.getItem("exam_active") === "true") {
     student = localStorage.getItem("exam_student");
     section = localStorage.getItem("exam_section");
-    email = localStorage.getItem("exam_email");
     current = parseInt(localStorage.getItem("exam_current")) || 0;
     score = parseInt(localStorage.getItem("exam_score")) || 0;
     violations = parseInt(localStorage.getItem("exam_violations")) || 0;
@@ -59,7 +58,6 @@ function saveProgress() {
     localStorage.setItem("exam_active", "true");
     localStorage.setItem("exam_student", student);
     localStorage.setItem("exam_section", section);
-    localStorage.setItem("exam_email", email);
     localStorage.setItem("exam_current", current);
     localStorage.setItem("exam_score", score);
     localStorage.setItem("exam_violations", violations);
@@ -70,7 +68,6 @@ function clearSavedProgress() {
   localStorage.removeItem("exam_active");
   localStorage.removeItem("exam_student");
   localStorage.removeItem("exam_section");
-  localStorage.removeItem("exam_email");
   localStorage.removeItem("exam_current");
   localStorage.removeItem("exam_score");
   localStorage.removeItem("exam_violations");
@@ -87,10 +84,9 @@ document.addEventListener("visibilitychange", function() {
   }
 });
 
-// 2. SECURITY SHORTCUT INTERCEPTION (Refresh, Screen Snapping, and Copying)
+// 2. SECURITY SHORTCUT INTERCEPTION
 window.addEventListener("keydown", function (e) {
   if (examActive) {
-    // Block System Refresh Keys (F5, Ctrl+R, Cmd+R)
     if (e.key === "F5" || e.keyCode === 116) {
       e.preventDefault();
       alert("Refresh is disabled during the exam.");
@@ -99,26 +95,16 @@ window.addEventListener("keydown", function (e) {
       e.preventDefault();
       alert("Refresh shortcuts are locked during the examination.");
     }
-
-    // --- SCREENSHOT DETECTOR BLOCK ---
-    
-    // Detect standard PrintScreen key
     if (e.key === "PrintScreen" || e.keyCode === 44) {
       e.preventDefault();
       handleScreenshotViolation();
     }
-    
-    // Detect Windows Snipping Tool (Windows + Shift + S)
     if (e.metaKey && e.shiftKey && (e.key === "S" || e.keyCode === 83)) {
       handleScreenshotViolation();
     }
-
-    // Detect Mac Screenshot Shortcuts (Cmd + Shift + 3 or Cmd + Shift + 4)
     if (e.metaKey && e.shiftKey && (e.key === "3" || e.key === "4")) {
       handleScreenshotViolation();
     }
-    
-    // Disable standard text copying (Ctrl + C / Cmd + C) to protect question bank
     if ((e.ctrlKey || e.metaKey) && (e.key === "c" || e.keyCode === 67)) {
       e.preventDefault();
       alert("Copying text is strictly prohibited.");
@@ -126,18 +112,13 @@ window.addEventListener("keydown", function (e) {
   }
 });
 
-// Helper function to process screenshot cheating attempts
 function handleScreenshotViolation() {
   violations++;
   saveProgress();
-  
-  // Wipe clipboard data immediately to prevent pasting the captured image
   navigator.clipboard.writeText(""); 
-  
   alert("VIOLATION DETECTED!\nScreenshots and screen snips are strictly prohibited. This attempt has been logged.");
 }
 
-// Wipe clipboard if they manage to trigger a copy event via a right-click or mouse gesture
 document.addEventListener("copy", (e) => {
   if (examActive) {
     e.preventDefault();
@@ -145,7 +126,7 @@ document.addEventListener("copy", (e) => {
   }
 });
 
-// 3. CONFIRMATION PROMPT ON HARD REFRESH
+// 3. REFRESH WARNING
 window.addEventListener("beforeunload", function (e) {
   if (examActive) {
     const confirmationMessage = "Warning: Refreshing or leaving this page will disrupt your exam sequence.";
@@ -155,7 +136,7 @@ window.addEventListener("beforeunload", function (e) {
   }
 });
 
-// 4. HISTORY TRAP FUNCTION (Disables Back Button)
+// 4. HISTORY LOCK
 function preventBackNavigation() {
   window.history.pushState(null, null, window.location.href);
   window.addEventListener("popstate", function () {
@@ -168,11 +149,9 @@ function preventBackNavigation() {
 
 function begin() {
   student = document.getElementById("studentName").value.trim();
-  email = document.getElementById("studentEmail").value.trim();
   section = document.getElementById("studentSection").value.trim();
 
   if (!student) { alert("Please enter student name."); return; }
-  if (!email) { alert("Please enter your email address."); return; }
   if (!section) { alert("Please enter section."); return; }
 
   document.getElementById("startContainer").classList.add("hidden");
@@ -274,7 +253,7 @@ function finishExam() {
       "Content-Type": "application/x-www-form-urlencoded",
     },
     body:
-      `name=${encodeURIComponent(student)}&email=${encodeURIComponent(email)}&section=${encodeURIComponent(
+      `name=${encodeURIComponent(student)}&section=${encodeURIComponent(
         section
       )}&score=${score}&total=${QUESTIONS.length}&violations=${violations}&datetime=${encodeURIComponent(
         datetime
